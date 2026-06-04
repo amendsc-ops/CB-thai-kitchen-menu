@@ -1,0 +1,416 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Sarabun:wght@300;400;500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; }
+  .app { max-width: 680px; background: var(--color-background-primary); min-height: 100vh; }
+  .header { background: #1a0a00; color: #f5e6c8; padding: 24px 20px 16px; text-align: center; }
+  .header-logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; letter-spacing: 3px; color: #d4a843; }
+  .header-sub { font-size: 12px; letter-spacing: 4px; color: #b8967a; margin-top: 4px; text-transform: uppercase; }
+  .header-tag { font-size: 11px; color: #8a7060; margin-top: 6px; font-style: italic; }
+  .category-nav { display: flex; gap: 0; overflow-x: auto; background: #1a0a00; padding: 0 12px 12px; scrollbar-width: none; }
+  .category-nav::-webkit-scrollbar { display: none; }
+  .cat-btn { background: none; border: 1px solid #3d2a1a; color: #b8967a; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-family: 'Sarabun', sans-serif; cursor: pointer; white-space: nowrap; margin-right: 6px; transition: all 0.2s; flex-shrink: 0; }
+  .cat-btn.active { background: #d4a843; border-color: #d4a843; color: #1a0a00; font-weight: 500; }
+  .section { padding: 16px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #1a0a00; border-bottom: 1px solid #d4a843; padding-bottom: 8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title i { color: #d4a843; font-size: 18px; }
+  .item-card { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); gap: 12px; }
+  .item-card:last-child { border-bottom: none; }
+  .item-info { flex: 1; }
+  .item-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
+  .item-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 3px; }
+  .spicy { color: #c0392b; font-size: 12px; margin-left: 4px; }
+  .item-right { text-align: right; min-width: 60px; }
+  .price { font-size: 15px; font-weight: 500; color: #1a0a00; font-family: 'Playfair Display', serif; }
+  .price-dark { color: var(--color-text-primary); }
+  .price-table { background: var(--color-background-secondary); border-radius: 8px; padding: 10px 14px; margin-top: 6px; }
+  .price-row { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; color: var(--color-text-secondary); }
+  .price-row span:last-child { font-weight: 500; color: var(--color-text-primary); }
+  .badge-new { background: #d4a843; color: #1a0a00; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; margin-left: 6px; vertical-align: middle; }
+  .section-group { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .group-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .vat-note { text-align: center; font-size: 11px; color: var(--color-text-secondary); padding: 16px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .content-section { display: none; }
+  .content-section.active { display: block; }
+  .cocktail-card { background: var(--color-background-secondary); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .cocktail-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+  .cocktail-ingredients { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+  .cocktail-price { font-size: 15px; font-weight: 500; color: #8a6030; margin-top: 4px; }
+  .wine-card { border-left: 2px solid #8a3030; padding: 10px 0 10px 14px; margin-bottom: 10px; }
+  .wine-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .wine-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .wine-prices { font-size: 12px; color: #8a3030; margin-top: 4px; font-weight: 500; }
+  .white-wine-card { border-left-color: #c8a030; }
+  .white-wine-card .wine-prices { color: #8a6030; }
+  .rose-card { border-left-color: #c06080; }
+  .rose-card .wine-prices { color: #a04060; }
+</style>
+
+<div class="app">
+  <div class="header">
+    <div class="header-logo">THAI KITCHEN</div>
+    <div class="header-sub">Authentic Thai Cuisine</div>
+    <div class="header-tag">Good food, sunny days, and tennis vibes</div>
+  </div>
+
+  <div class="category-nav">
+    <button class="cat-btn active" onclick="showSection('starters')"><i class="ti ti-soup" aria-hidden="true"></i> Starters</button>
+    <button class="cat-btn" onclick="showSection('mains')"><i class="ti ti-flame" aria-hidden="true"></i> Mains</button>
+    <button class="cat-btn" onclick="showSection('duck')"><i class="ti ti-feather" aria-hidden="true"></i> Duck & Pork</button>
+    <button class="cat-btn" onclick="showSection('noodles')"><i class="ti ti-circles" aria-hidden="true"></i> Noodles & Rice</button>
+    <button class="cat-btn" onclick="showSection('veg')"><i class="ti ti-leaf" aria-hidden="true"></i> Vegetables & Sides</button>
+    <button class="cat-btn" onclick="showSection('desserts')"><i class="ti ti-ice-cream" aria-hidden="true"></i> Desserts</button>
+    <button class="cat-btn" onclick="showSection('drinks')"><i class="ti ti-glass" aria-hidden="true"></i> Drinks</button>
+    <button class="cat-btn" onclick="showSection('cocktails')"><i class="ti ti-bottle" aria-hidden="true"></i> Cocktails & Wine</button>
+  </div>
+
+  <div id="starters" class="content-section active section">
+    <div class="section-title"><i class="ti ti-soup" aria-hidden="true"></i> Starters</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Vegetables Spring Rolls</div><div class="item-desc">Cabbage, carrots, sweet corn, mushrooms, glass noodles</div></div>
+        <div class="item-right"><div class="price price-dark">£7.50</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Sweet Corn Cake</div><div class="item-desc">Sweet corn and peas with flour and fragrant Thai spices</div></div>
+        <div class="item-right"><div class="price price-dark">£7.50</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Gyoza</div><div class="item-desc">Deep fried chicken and vegetable dumplings</div></div>
+        <div class="item-right"><div class="price price-dark">£7.50</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Fish Cake</div><div class="item-desc">Thai Fish Cake, served with nutty sweet chilli sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£7.50</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Chicken Satay</div><div class="item-desc">Chargrilled marinated chicken on skewers with peanut sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£7.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Chicken and Prawn Toast</div><div class="item-desc">Marinated prawns and chicken on toast with sesame seeds</div></div>
+        <div class="item-right"><div class="price price-dark">£7.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Duck Spring Rolls</div><div class="item-desc">Roast duck, vegetables and glass noodles. Served with hoisin sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£8.50</div></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-bowl" aria-hidden="true"></i> Soups</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Tom Yum Soup <span class="spicy">🌶</span></div><div class="item-desc">Hot and sour with lemongrass, lime leaves, galangal and fresh chilli</div></div>
+        <div class="price-table" style="min-width:110px">
+          <div class="price-row"><span>Mushroom</span><span>£6.00</span></div>
+          <div class="price-row"><span>Chicken</span><span>£7.50</span></div>
+          <div class="price-row"><span>Prawns</span><span>£8.50</span></div>
+        </div>
+      </div>
+      <div class="item-card" style="margin-top:8px">
+        <div class="item-info"><div class="item-name">Tom Kha Soup <span class="spicy">🌶</span></div><div class="item-desc">Classic Thai coconut soup with lemongrass, lime leaves, galangal</div></div>
+        <div class="price-table" style="min-width:110px">
+          <div class="price-row"><span>Mushroom</span><span>£6.00</span></div>
+          <div class="price-row"><span>Chicken</span><span>£7.50</span></div>
+          <div class="price-row"><span>Prawns</span><span>£8.50</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mains" class="content-section section">
+    <div class="section-title"><i class="ti ti-flame" aria-hidden="true"></i> Curries</div>
+    <div class="section-group">
+      <div class="group-title">Choose your curry</div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Green Curry <span class="spicy">🌶</span></div><div class="item-desc">Aubergines, bell peppers, fine beans, bamboo shoots, basil</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Red Curry <span class="spicy">🌶</span></div><div class="item-desc">Milder than green. Aubergines, bell peppers, fine beans, bamboo shoots</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Panang Curry</div><div class="item-desc">Rich and creamy coconut curry with bell peppers, green beans, basil</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Massaman Curry</div><div class="item-desc">Mild coconut milk curry with potatoes, onions, topped with peanuts</div></div></div>
+      <div class="price-table" style="margin-top:10px">
+        <div class="price-row"><span>Vegetables</span><span>£11.50</span></div>
+        <div class="price-row"><span>Tofu</span><span>£12.00</span></div>
+        <div class="price-row"><span>Chicken</span><span>£12.50</span></div>
+        <div class="price-row"><span>Beef</span><span>£12.95</span></div>
+        <div class="price-row"><span>Prawns</span><span>£14.50</span></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-tools-kitchen-2" aria-hidden="true"></i> Stir-Fried</div>
+    <div class="section-group">
+      <div class="group-title">Choose your sauce</div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Chilli and Basil <span class="spicy">🌶</span></div><div class="item-desc">Phad Kha Pow — chilli, garlic, fine beans, bell peppers, bamboo shoots, basil</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Sweet and Sour</div><div class="item-desc">Phad Preaw Wan — sweet and sour sauce with onion, tomatoes, cucumber, pineapple, bell peppers</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Oyster Sauce</div><div class="item-desc">Phad Nam Man Hoy — rich oyster sauce with onion, carrot, bell peppers, mushrooms, spring onions</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Cashew Nut</div><div class="item-desc">Cashew nut, spring onions, carrots, mushrooms, bell peppers, water chestnuts, pineapple</div></div></div>
+      <div class="price-table" style="margin-top:10px">
+        <div class="price-row"><span>Vegetables</span><span>£11.00</span></div>
+        <div class="price-row"><span>Tofu</span><span>£11.50</span></div>
+        <div class="price-row"><span>Chicken</span><span>£12.00</span></div>
+        <div class="price-row"><span>Beef</span><span>£12.50</span></div>
+        <div class="price-row"><span>Prawns</span><span>£13.95</span></div>
+      </div>
+    </div>
+    <div class="section-group" style="margin-top:12px">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Prawn Broccoli</div><div class="item-desc">Stir fried prawns with garlic, broccoli and carrots in oyster sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£12.95</div></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-flame" aria-hidden="true"></i> Phad Krapow <span class="badge-new">Featured</span></div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Chilli and Basil Rice</div><div class="item-desc">Minced chicken, garlic, chilli, fine beans, bell peppers and basil. Served with steamed rice and fried egg</div></div>
+        <div class="item-right"><div class="price price-dark">£14.95</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="duck" class="content-section section">
+    <div class="section-title"><i class="ti ti-feather" aria-hidden="true"></i> Duck</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Red Curry w/ Roasted Duck</div><div class="item-desc">Kaeng Phed Ped Yang — roasted duck in red curry with tomatoes, onion, green apple, grapes, pineapple</div></div>
+        <div class="item-right"><div class="price price-dark">£15.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Crispy Duck Chilli Basil <span class="spicy">🌶</span></div><div class="item-desc">Stir fried crispy duck breast with chilli, garlic, fine beans, bell peppers, onions, bamboo shoots</div></div>
+        <div class="item-right"><div class="price price-dark">£15.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Phad Thai Crispy Duck</div><div class="item-desc">Classic Phad Thai noodles topped with crispy duck</div></div>
+        <div class="item-right"><div class="price price-dark">£16.00</div></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-meat" aria-hidden="true"></i> Crispy Pork</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Crispy Pork Chilli Basil <span class="spicy">🌶</span></div><div class="item-desc">Crispy pork belly with chilli, garlic, fine beans, bell peppers, onions, bamboo shoots</div></div>
+        <div class="item-right"><div class="price price-dark">£15.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Crispy Pork with Cabbage <span class="spicy">🌶</span></div><div class="item-desc">Crispy pork belly with garlic and cabbage in oyster sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£15.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Crispy Pork Panang</div><div class="item-desc">Pork belly in rich creamy coconut curry with bell peppers, green beans, basil</div></div>
+        <div class="item-right"><div class="price price-dark">£15.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Crispy Pork Phad Thai</div><div class="item-desc">Classic Phad Thai noodles topped with crispy pork belly</div></div>
+        <div class="item-right"><div class="price price-dark">£16.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="noodles" class="content-section section">
+    <div class="section-title"><i class="ti ti-circles" aria-hidden="true"></i> Noodles & Rice</div>
+    <div class="section-group">
+      <div class="group-title">Choose your dish</div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Phad Thai</div><div class="item-desc">Classic stir fried rice noodles in homemade Phad Thai sauce, egg, spring onions, carrots, bean sprouts. Ground peanut on the side</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Phad Si Ew</div><div class="item-desc">Stir fried flat rice noodles with egg, mixed vegetables and soy sauce</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Chilli and Basil Noodles <span class="spicy">🌶</span></div><div class="item-desc">Stir fried Udon Noodles with chilli, garlic, fine beans, bell peppers, bamboo shoots, broccoli, carrots, basil</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Fried Rice</div><div class="item-desc">Thai fried rice with egg, mixed vegetables, light and dark soy sauce</div></div></div>
+      <div class="price-table" style="margin-top:10px">
+        <div class="price-row"><span>Vegetables</span><span>£11.50</span></div>
+        <div class="price-row"><span>Tofu</span><span>£12.50</span></div>
+        <div class="price-row"><span>Chicken</span><span>£12.95</span></div>
+        <div class="price-row"><span>Beef</span><span>£13.50</span></div>
+        <div class="price-row"><span>Prawns</span><span>£14.50</span></div>
+        <div class="price-row"><span>Crispy Pork</span><span>£15.95</span></div>
+        <div class="price-row"><span>Duck</span><span>£15.95</span></div>
+        <div class="price-row" style="border-top: 0.5px solid var(--color-border-tertiary); margin-top:4px; padding-top:6px"><span>Extra Meat +£2</span><span>Tofu / Chicken / Beef / Cashew</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="veg" class="content-section section">
+    <div class="section-title"><i class="ti ti-leaf" aria-hidden="true"></i> Vegetables</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Mixed Vegetables</div><div class="item-desc">Stir fried mixed vegetables with garlic and light soy sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£8.00</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Broccoli and Carrots</div><div class="item-desc">Stir fried broccoli and carrots with garlic and light soy sauce</div></div>
+        <div class="item-right"><div class="price price-dark">£8.00</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Bean Sprouts and Tofu</div><div class="item-desc">Stir fried bean sprouts with tofu, spring onions and peppers</div></div>
+        <div class="item-right"><div class="price price-dark">£8.00</div></div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-bowl-chopsticks" aria-hidden="true"></i> Sides</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Steamed Rice</div></div>
+        <div class="item-right"><div class="price price-dark">£3.50</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Egg Fried Rice</div></div>
+        <div class="item-right"><div class="price price-dark">£3.95</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="desserts" class="content-section section">
+    <div class="section-title"><i class="ti ti-ice-cream" aria-hidden="true"></i> Desserts</div>
+    <div class="section-group">
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Coconut Ice Cream</div></div>
+        <div class="item-right"><div class="price price-dark">£6.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Banana Fritters</div></div>
+        <div class="item-right"><div class="price price-dark">£7.95</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Mango & Coconut</div><div class="item-desc">Ice cream with sticky rice</div></div>
+        <div class="item-right"><div class="price price-dark">£8.25</div></div>
+      </div>
+      <div class="item-card">
+        <div class="item-info"><div class="item-name">Mango and Sticky Rice</div><div class="item-desc">Seasonal only</div></div>
+        <div class="item-right"><div class="price price-dark">£9.50</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="drinks" class="content-section section">
+    <div class="section-title"><i class="ti ti-glass" aria-hidden="true"></i> Soft Drinks</div>
+    <div class="section-group">
+      <div class="item-card"><div class="item-info"><div class="item-name">Coke / Diet Coke / Coke Zero / 7up</div></div><div class="item-right"><div class="price price-dark">£4.25</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Juices</div><div class="item-desc">Apple, Orange, Pineapple</div></div><div class="item-right"><div class="price price-dark">£4.25</div></div></div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-cup" aria-hidden="true"></i> Hot Teas</div>
+    <div class="section-group">
+      <div class="item-card"><div class="item-info"><div class="item-name">Hot Teas</div><div class="item-desc">Lemongrass & Pandan, Lemon & Ginger, Green Tea, Jasmine</div></div><div class="item-right"><div class="price price-dark">£3.50</div></div></div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-cup" aria-hidden="true"></i> Thai Drinks (Over Ice)</div>
+    <div class="section-group">
+      <div class="item-card"><div class="item-info"><div class="item-name">Fresh Lime Juice</div></div><div class="item-right"><div class="price price-dark">£4.95</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Thai Milk Coffee</div></div><div class="item-right"><div class="price price-dark">£4.95</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Thai Lemon Tea</div></div><div class="item-right"><div class="price price-dark">£4.95</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Thai Milk Tea</div></div><div class="item-right"><div class="price price-dark">£4.95</div></div></div>
+    </div>
+    <div class="section-title" style="margin-top:16px"><i class="ti ti-beer" aria-hidden="true"></i> Beers</div>
+    <div class="section-group">
+      <div class="item-card"><div class="item-info"><div class="item-name">Chang</div><div class="item-desc">Light, slightly sweet 5% abv</div></div><div class="item-right"><div class="price price-dark">£5.75</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Singha</div><div class="item-desc">Crisp, full-bodied 5% abv</div></div><div class="item-right"><div class="price price-dark">£5.75</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Leo</div><div class="item-desc">Smooth, easy-drinking 5% abv</div></div><div class="item-right"><div class="price price-dark">£5.75</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Non-Alcohol Beer</div></div><div class="item-right"><div class="price price-dark">£4.95</div></div></div>
+    </div>
+    <div class="section-group" style="margin-top:12px">
+      <div class="item-card"><div class="item-info"><div class="item-name">Still Water</div></div><div class="item-right"><div class="price price-dark">£2.75 / £4.95</div></div></div>
+      <div class="item-card"><div class="item-info"><div class="item-name">Sparkling Water</div></div><div class="item-right"><div class="price price-dark">£2.75 / £4.95</div></div></div>
+    </div>
+  </div>
+
+  <div id="cocktails" class="content-section section">
+    <div class="section-title"><i class="ti ti-martini" aria-hidden="true"></i> Cocktails</div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">G&T</div>
+      <div class="cocktail-ingredients">Double Gordon gin & tonic</div>
+      <div class="cocktail-price">£9.95</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Passion Fruit Martini</div>
+      <div class="cocktail-ingredients">Sapling vodka, Passoa, Vanilla syrup, Passionfruit puree, Lime juice</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Lychee Martini</div>
+      <div class="cocktail-ingredients">Sapling vodka, Lychee liqueur, Lychee puree, Sugar syrup, Lime juice</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Espresso Martini</div>
+      <div class="cocktail-ingredients">Sapling Vodka, FAIR Café liqueur, Cold brew espresso, Vanilla syrup, Sugar syrup</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Old Fashioned</div>
+      <div class="cocktail-ingredients">Adnams Single Malt Whisky, Angostura Bitters, Fresh oranges</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Pink Grapefruit Margarita</div>
+      <div class="cocktail-ingredients">El Rayo Tequila, Grapefruit juice, Lime juice</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Elderflower Collins</div>
+      <div class="cocktail-ingredients">Adnams Copper House Gin, Elderflower liqueur, Lemon juice, Sugar syrup, Fresh cucumber</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+    <div class="cocktail-card">
+      <div class="cocktail-name">Mojito</div>
+      <div class="cocktail-ingredients">Suffolk Distillery white rum, Lime juice, Sugar syrup, Fresh mint</div>
+      <div class="cocktail-price">£11.50</div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px"><i class="ti ti-bottle" aria-hidden="true"></i> Red Wine</div>
+    <div class="wine-card">
+      <div class="wine-name">Le Petit Chat Malin Rouge, VIN de France</div>
+      <div class="wine-desc">Juicy red berries, savoury notes, soft velvety tannins — smooth and easy drinking</div>
+      <div class="wine-prices">Bottle £24.95 · 125ml £5.50 · 175ml £7.50 · 250ml £9.50</div>
+    </div>
+    <div class="wine-card">
+      <div class="wine-name">Tierra Alta Cabernet</div>
+      <div class="wine-desc">Chilean red with blackcurrant, soft tannins, and a smooth finish</div>
+      <div class="wine-prices">Bottle £25.95</div>
+    </div>
+    <div class="wine-card">
+      <div class="wine-name">The Listening Station Shiraz</div>
+      <div class="wine-desc">Vibrant Victorian Shiraz with juicy black cherry, white pepper, and silky finish</div>
+      <div class="wine-prices">Bottle £27.95</div>
+    </div>
+    <div class="wine-card">
+      <div class="wine-name">Les Volets Malbec</div>
+      <div class="wine-desc">Fresh French Malbec with red fruit and a hint of cocoa</div>
+      <div class="wine-prices">Bottle £28.95</div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px"><i class="ti ti-bottle" aria-hidden="true"></i> White Wine</div>
+    <div class="wine-card white-wine-card">
+      <div class="wine-name">Le Petit Chat Malin Blanc, Vin de France</div>
+      <div class="wine-desc">Fresh Spanish white with citrus, peach, and a crisp finish</div>
+      <div class="wine-prices">Bottle £24.95 · 125ml £5.50 · 175ml £7.50 · 250ml £9.50</div>
+    </div>
+    <div class="wine-card white-wine-card">
+      <div class="wine-name">Piattini Pinot Grigio</div>
+      <div class="wine-desc">Crisp Italian white with citrus and floral notes</div>
+      <div class="wine-prices">Bottle £25.95</div>
+    </div>
+    <div class="wine-card white-wine-card">
+      <div class="wine-name">The Last Stand Chardonnay</div>
+      <div class="wine-desc">Fresh Aussie white with citrus and pineapple notes</div>
+      <div class="wine-prices">Bottle £26.95</div>
+    </div>
+    <div class="wine-card white-wine-card">
+      <div class="wine-name">Adobe Reserva Sauvignon Blanc (Organic)</div>
+      <div class="wine-desc">Crisp South African white with apple and citrus notes</div>
+      <div class="wine-prices">Bottle £28.95</div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px"><i class="ti ti-bottle" aria-hidden="true"></i> Rosé & Prosecco</div>
+    <div class="wine-card rose-card">
+      <div class="wine-name">Le Petit Chat Malin Rosé, Vin de France</div>
+      <div class="wine-desc">Juicy red berries, dry and refreshing, with a subtle savoury spice</div>
+      <div class="wine-prices">Bottle £24.95 · 125ml £5.50 · 175ml £7.50 · 250ml £9.50</div>
+    </div>
+    <div class="wine-card white-wine-card">
+      <div class="wine-name">Le Dolci Collins Prosecco Spumante Brut</div>
+      <div class="wine-desc">Fresh Italian fizz with green apple, citrus, and a crisp finish</div>
+      <div class="wine-prices">Bottle £32.95 · 200ml £12.95</div>
+    </div>
+  </div>
+
+  <div class="vat-note">All prices include 20% VAT</div>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
